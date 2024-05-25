@@ -1,5 +1,6 @@
 import 'package:editorjs_flutter/editorjs_flutter.dart';
 import 'package:flutter/material.dart';
+
 import 'createnote.dart';
 
 void main() {
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({required this.title, super.key});
 
   final String title;
 
@@ -31,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  EditorJSView editorJSView;
+  EditorJSView? editorJSView;
 
   @override
   void initState() {
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
         shrinkWrap: true,
         padding: EdgeInsets.all(15),
         children: [
-          (editorJSView != null) ? editorJSView : Text("Please wait...")
+          (editorJSView != null) ? editorJSView! : Text("Please wait...")
         ],
       ),
       floatingActionButton: FloatingActionButton(
