@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:editorjs_flutter/src/model/EditorJSCSSTag.dart';
 import 'package:editorjs_flutter/src/model/EditorJSData.dart';
 import 'package:editorjs_flutter/src/model/EditorJSViewStyles.dart';
-import 'package:editorjs_flutter/src/model/EditorJSCSSTag.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
 
 class EditorJSView extends StatefulWidget {
   final String? editorJSData;
@@ -109,11 +108,10 @@ class EditorJSViewState extends State<EditorJSView> {
                           children: <Widget>[
                             Expanded(
                                 child: Container(
-                                  child: Html(
-                                      data: bullet + element,
-                                      style: customStyleMap),
-                                )
-                            )
+                              child: Html(
+                                  data: bullet + element,
+                                  style: customStyleMap),
+                            ))
                           ],
                         ),
                       );
@@ -148,14 +146,15 @@ class EditorJSViewState extends State<EditorJSView> {
         map.putIfAbsent(
             element.tag.toString(),
             () => Style(
-                backgroundColor: (element.backgroundColor != null)
-                    ? getColor(element.backgroundColor!)
-                    : null,
-                color:
-                    (element.color != null) ? getColor(element.color!) : null,
-                padding: (element.padding != null)
-                    ? EdgeInsets.all(element.padding!)
-                    : null));
+                  backgroundColor: (element.backgroundColor != null)
+                      ? getColor(element.backgroundColor!)
+                      : null,
+                  color:
+                      (element.color != null) ? getColor(element.color!) : null,
+                  // padding: (element.padding != null)
+                  //     ? EdgeInsets.all(element.padding.)
+                  //     : null
+                ));
       },
     );
 
