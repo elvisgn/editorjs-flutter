@@ -1,5 +1,8 @@
+// ignore_for_file: constant_pattern_never_matches_value_type
+
 import 'dart:convert';
 
+import 'package:editorjs_flutter/src/model/EditorJSBlockTypes.dart';
 import 'package:editorjs_flutter/src/model/EditorJSCSSTag.dart';
 import 'package:editorjs_flutter/src/model/EditorJSData.dart';
 import 'package:editorjs_flutter/src/model/EditorJSViewStyles.dart';
@@ -7,10 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class EditorJSView extends StatefulWidget {
-  final String? editorJSData;
+  final String editorJSData;
   final String? styles;
 
-  const EditorJSView({Key? key, this.editorJSData, this.styles})
+  const EditorJSView({Key? key, required this.editorJSData, this.styles})
       : super(key: key);
 
   @override
@@ -30,16 +33,17 @@ class EditorJSViewState extends State<EditorJSView> {
 
     setState(
       () {
-        dataObject = EditorJSData.fromJson(jsonDecode(widget.editorJSData!));
-        styles = EditorJSViewStyles.fromJson(jsonDecode(widget.styles!));
+        dataObject = EditorJSData.fromJson(jsonDecode(widget.editorJSData));
+        if (widget.styles != null) {
+          styles = EditorJSViewStyles.fromJson(jsonDecode(widget.styles!));
+          customStyleMap = generateStylemap(styles.cssTags!);
+        }
 
-        customStyleMap = generateStylemap(styles.cssTags!);
-
-        dataObject.blocks!.forEach(
-          (element) {
+        dataObject.blocks?.forEach(
+          (block) {
             double levelFontSize = 16;
 
-            switch (element.data!.level) {
+            switch (block.data!.level) {
               case 1:
                 levelFontSize = 32;
                 break;
@@ -60,33 +64,33 @@ class EditorJSViewState extends State<EditorJSView> {
                 break;
             }
 
-            switch (element.type) {
-              case "header":
+            switch (block.type) {
+              case EditorJSBlockTypes.header:
                 items.add(Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        element.data!.text!,
+                        block.data!.text!,
                         style: TextStyle(
                             fontSize: levelFontSize,
-                            fontWeight: (element.data!.level! <= 3)
+                            fontWeight: (block.data!.level! <= 3)
                                 ? FontWeight.bold
                                 : FontWeight.normal),
                       )
                     ]));
                 break;
-              case "paragraph":
+              case EditorJSBlockTypes.paragraph:
                 items.add(Html(
-                  data: element.data!.text,
+                  data: block.data!.text,
                   style: customStyleMap,
                 ));
                 break;
-              case "list":
+              case EditorJSBlockTypes.list:
                 String bullet = "\u2022 ";
-                String? style = element.data!.style;
+                String? style = block.data!.style;
                 int counter = 1;
 
-                element.data!.items!.forEach(
+                block.data!.items!.forEach(
                   (element) {
                     if (style == 'ordered') {
                       bullet = counter.toString();
@@ -119,7 +123,7 @@ class EditorJSViewState extends State<EditorJSView> {
                   },
                 );
                 break;
-              case "delimiter":
+              case EditorJSBlockTypes.quote:
                 items.add(Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -127,8 +131,8 @@ class EditorJSViewState extends State<EditorJSView> {
                       Expanded(child: Divider(color: Colors.grey))
                     ]));
                 break;
-              case "image":
-                items.add(Image.network(element.data!.file!.url!));
+              case EditorJSBlockTypes.image:
+                items.add(Image.network(block.data!.file!.url!));
                 break;
             }
             items.add(const SizedBox(height: 10));
@@ -146,15 +150,14 @@ class EditorJSViewState extends State<EditorJSView> {
         map.putIfAbsent(
             element.tag.toString(),
             () => Style(
-                  backgroundColor: (element.backgroundColor != null)
-                      ? getColor(element.backgroundColor!)
-                      : null,
-                  color:
-                      (element.color != null) ? getColor(element.color!) : null,
-                  // padding: (element.padding != null)
-                  //     ? EdgeInsets.all(element.padding.)
-                  //     : null
-                ));
+                backgroundColor: (element.backgroundColor != null)
+                    ? getColor(element.backgroundColor!)
+                    : null,
+                color:
+                    (element.color != null) ? getColor(element.color!) : null,
+                padding: (element.padding != null)
+                    ? HtmlPaddings.all(element.padding!)
+                    : null));
       },
     );
 
