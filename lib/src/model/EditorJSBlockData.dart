@@ -4,9 +4,10 @@ class EditorJSBlockData {
   final String? text;
   final int? level;
   final String? style;
-  final List<String>? items;
+  final List<dynamic>? items;
   final EditorJSBlockFile? file;
   final String? caption;
+  final String? alignment;
   final bool? withBorder;
   final bool? stretched;
   final bool? withBackground;
@@ -18,13 +19,14 @@ class EditorJSBlockData {
       this.items,
       this.file,
       this.caption,
+      this.alignment,
       this.withBorder,
       this.stretched,
       this.withBackground});
 
   factory EditorJSBlockData.fromJson(Map<String, dynamic> parsedJson) {
     var list = parsedJson['items'] as List?;
-    final List<String> itemsList = <String>[];
+    final List<dynamic> itemsList = <dynamic>[];
 
     if (list != null) {
       list.forEach((element) {
@@ -41,6 +43,7 @@ class EditorJSBlockData {
             ? EditorJSBlockFile.fromJson(parsedJson['file'])
             : null,
         caption: parsedJson['caption'],
+        alignment: parsedJson['alignment'],
         withBorder: parsedJson['withBorder'],
         withBackground: parsedJson['withBackground']);
   }

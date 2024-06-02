@@ -1,5 +1,6 @@
 import 'package:editorjs_flutter/editorjs_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'createnote.dart';
 
@@ -41,14 +42,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void fetchTestData() async {
-    String data = await DefaultAssetBundle.of(context)
-        .loadString("test_data/editorjsdatatest.json");
-    String styles = await DefaultAssetBundle.of(context)
-        .loadString("test_data/editorjsstyles.json");
-
-    setState(() {
-      editorJSView = EditorJSView(editorJSData: data, styles: styles);
+    String data = await http
+        .get(Uri.parse(
+            'https://d3574m8g5kpmf1.cloudfront.net/10k5XhzIpmMnM4pYC3XhKGWEiPq2/520076df-a9a4-4a8a-ae73-910956b024b6.json'))
+        .then((response) {
+      return response.body;
     });
+    editorJSView = EditorJSView(editorJSData: data);
+    setState(() {});
   }
 
   void _showEditor() {
@@ -64,9 +65,11 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: ListView(
         shrinkWrap: true,
-        padding: EdgeInsets.all(15),
+        padding: EdgeInsets.all(8),
         children: [
-          (editorJSView != null) ? editorJSView! : Text("Please wait...")
+          (editorJSView != null)
+              ? editorJSView!
+              : Center(child: Text("Please wait..."))
         ],
       ),
       floatingActionButton: FloatingActionButton(
