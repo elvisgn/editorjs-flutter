@@ -144,7 +144,7 @@ class EditorJSViewState extends State<EditorJSView> {
               case "checklist":
                 block.data?.items?.forEach(
                   (element) {
-                    print('Checklist: $element');
+                    // print('Checklist: $element');
                     items.add(
                       Row(children: [
                         Checkbox.adaptive(
